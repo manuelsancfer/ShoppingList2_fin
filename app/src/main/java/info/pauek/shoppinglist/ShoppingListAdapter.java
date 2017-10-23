@@ -17,7 +17,7 @@ import java.util.zip.Inflater;
  * Created by DjManko on 23/10/17.
  */
 
-public class ShoppingListAdapter extends ArrayAdapter<String> {
+public class ShoppingListAdapter extends ArrayAdapter<ShoppingItem> {
     public ShoppingListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List objects) {
         super(context, resource, objects);
     }
@@ -34,8 +34,8 @@ public class ShoppingListAdapter extends ArrayAdapter<String> {
 
         CheckBox shopping_item = (CheckBox) result.findViewById(R.id.shopping_item); //la busqueda
                                     // dentro del view que me ha devuelto el inflador(pastillita).
-        String item_text = getItem(position);//sin arrayadapter<string> hay que poner delante (string)
-        shopping_item.setText(item_text);       //escribo el item en checkbox
+        ShoppingItem item = getItem(position); //cojo la pos del item
+        shopping_item.setText(item.getText());       //escribo el item en checkbox
 
         return result;  //devuelvo la pastillita de la lista
     }

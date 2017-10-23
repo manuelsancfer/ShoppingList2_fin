@@ -9,7 +9,7 @@
         android:id="@+id/shopping_item"
         android:layout_width="match_parent"
         android:layout_height="?attr/listPreferredItemHeight"
-        android:paddingLeft="8dp"
+        android:paddingLeft="10dp"
         android:text="CheckBox"
         android:textSize="16sp" />
 </LinearLayout>
