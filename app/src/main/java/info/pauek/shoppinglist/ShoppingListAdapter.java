@@ -32,10 +32,11 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingItem> {
             result = inflater.inflate(R.layout.shopping_item, null);
         }
 
-        CheckBox shopping_item = (CheckBox) result.findViewById(R.id.shopping_item); //la busqueda
+        CheckBox checkbox = (CheckBox) result.findViewById(R.id.shopping_item); //la busqueda
                                     // dentro del view que me ha devuelto el inflador(pastillita).
         ShoppingItem item = getItem(position); //cojo la pos del item
-        shopping_item.setText(item.getText());       //escribo el item en checkbox
+        checkbox.setText(item.getText());       //escribo el item en checkbox
+        checkbox.setChecked(item.getCheck());  //para saber si esta marcado
 
         return result;  //devuelvo la pastillita de la lista
     }

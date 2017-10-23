@@ -60,6 +60,14 @@ public class ShoppingListActivity extends AppCompatActivity {
         });
 
         list.setAdapter(adapter);
+//para enterarnos cuando clican un elemento
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override           // posicion que han clicado = pos
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+                itemList.get(pos).toggleChecked();
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -74,7 +82,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm);
         String fmt = getResources().getString(R.string.confirm_message);
-        builder.setMessage(String.format(fmt,itemList.get(pos)));
+        builder.setMessage(String.format(fmt,itemList.get(pos).getText()));
         builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -93,5 +101,7 @@ public class ShoppingListActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             edit_item.setText("");
         }
+        //al añadir item que el scroll baje para que puedas verlo:
+        list.smoothScrollToPosition(itemList.size()-1); //última pos size()-1
     }
 }

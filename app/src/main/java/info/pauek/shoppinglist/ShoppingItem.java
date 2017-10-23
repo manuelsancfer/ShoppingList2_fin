@@ -6,15 +6,16 @@ package info.pauek.shoppinglist;
 
 public class ShoppingItem {
     private String text;    //el texto de pastilla
-    private Boolean check;  //el check"          "(si esta marcado o no)
+    private Boolean checked;  //el check"          "(si esta marcado o no)
 
     public ShoppingItem(String text) {
         this.text = text;   //this.text es para diferenciar del private Strint text.
+        this.checked=false;
     }
 
     public ShoppingItem(String text, Boolean check) {
         this.text = text;
-        this.check = check;
+        this.checked = check;
     }
 
     public String getText() {
@@ -26,10 +27,14 @@ public class ShoppingItem {
     }
 
     public Boolean getCheck() {
-        return check;
+        return checked;
     }
 
     public void setCheck(Boolean check) {
-        this.check = check;
+        this.checked = check;
+    }
+
+    public void toggleChecked() {
+        this.checked = !this.checked;
     }
 }
