@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class ShoppingListActivity extends AppCompatActivity {
 
     private static final String FILENAME = "shopping_list.txt"; //nombre del fichero que leeremos
     // y devuelve un tipo objeto, el contexto lo coge de la zona interna de la aplicacio
+    private static final int MAX_BYTES = 8000;              //Tamaño que sabemos que nunca superará
 
     private void writeItemlist(){   //para guardar en una lista de texto
 
@@ -56,6 +58,35 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
+    private void readItemList() {                        //para leer el fichero
+        itemList = new ArrayList<>();                    //aquí se rellenará la lista
+
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            byte[] buffer = new byte[MAX_BYTES];
+            int nread = fis.read(buffer);//Recibe una tabla de BY.  Nread  es el num de bytes léidos
+
+            String content = new String (buffer, 0, nread); //construir con constructor 0 es
+            // el offset(inicio), nread la longitud, el string que creará el contenido del fichero
+            String[] lines = content.split("\n");   //extraer las líneas del fichero y dividir
+
+            for (String line : lines) {//para extraer las líneas del string, foreach pasa por lineas
+                String[] parts = line.split(";");   //; separa string del bool parts [0] es
+                // el nombre, parts[1] el bool(texto).
+                itemList.add(new ShoppingItem(parts[0], parts[1].equals("true")));
+                //añadir items a la lista, será cierto cuando p[1] sea true(checked)
+            }
+            fis.close();
+
+        } catch (FileNotFoundException e) {
+            Log.i("manu", "readItemList: FileNotFoundException");
+        } catch (IOException e) {
+            Log.e("Manu", "writeItemList: IOException");
+            Toast.makeText(this, R.string.cannot_read, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
     @Override
     protected void onStop() {   //Para no guardar cada vez que creamos un ítem
         super.onStop();
@@ -71,11 +102,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         btn_add = (Button) findViewById(R.id.btn_add);
         edit_item = (EditText) findViewById(R.id.edit_item);
 
-        itemList = new ArrayList<>();
-        itemList.add(new ShoppingItem("Patatas"));
-        itemList.add(new ShoppingItem("Papel WC"));
-        itemList.add(new ShoppingItem("Zanahorias"));
-        itemList.add(new ShoppingItem("Copas Danone"));
+        readItemList();
 
         adapter = new ShoppingListAdapter(
                 this,
