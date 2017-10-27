@@ -1,9 +1,11 @@
 package info.pauek.shoppinglist;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,7 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ShoppingListActivity extends AppCompatActivity {
@@ -23,6 +29,38 @@ public class ShoppingListActivity extends AppCompatActivity {
     private ListView list;
     private Button btn_add;
     private EditText edit_item;
+
+    private static final String FILENAME = "shopping_list.txt"; //nombre del fichero que leeremos
+    // y devuelve un tipo objeto, el contexto lo coge de la zona interna de la aplicacio
+
+    private void writeItemlist(){   //para guardar en una lista de texto
+
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE); //abre fichero
+
+            for (int i = 0; i < itemList.size(); i++){  //para pasar por todos los items
+                ShoppingItem it = itemList.get(i);      //el item que cogemos
+                String line = String.format("%s;%b\n", it.getText(), it.getCheck());
+
+                fos.write(line.getBytes());             //grabar la línea de un fichero
+            }
+            fos.close();                                //cerrar el fichero
+
+        } catch (FileNotFoundException e) {
+            Log.e("Manu", "writeItemlist: FileNotFoundException");
+            Toast.makeText(this, R.string.cannot_write, Toast.LENGTH_SHORT).show();
+        }
+        catch (IOException e) {
+            Log.e("Manu", "writeItemList: IOException");
+            Toast.makeText(this, R.string.cannot_write, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onStop() {   //Para no guardar cada vez que creamos un ítem
+        super.onStop();
+        writeItemlist();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
