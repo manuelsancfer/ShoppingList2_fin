@@ -69,15 +69,17 @@ public class ShoppingListActivity extends AppCompatActivity {
             byte[] buffer = new byte[MAX_BYTES];
             int nread = fis.read(buffer);//Recibe una tabla de BY.  Nread  es el num de bytes léidos
 
-            String content = new String (buffer, 0, nread); //construir con constructor 0 es
-            // el offset(inicio), nread la longitud, el string que creará el contenido del fichero
-            String[] lines = content.split("\n");   //extraer las líneas del fichero y dividir
+            if(nread > 0) {
+                String content = new String(buffer, 0, nread); //construir con constructor 0 es
+                // el offset(inicio), nread la longitud, el string que creará el contenido del fichero
+                String[] lines = content.split("\n");   //extraer las líneas del fichero y dividir
 
-            for (String line : lines) {//para extraer las líneas del string, foreach pasa por lineas
-                String[] parts = line.split(";");   //; separa string del bool parts [0] es
-                // el nombre, parts[1] el bool(texto).
-                itemList.add(new ShoppingItem(parts[0], parts[1].equals("true")));
-                //añadir items a la lista, será cierto cuando p[1] sea true(checked)
+                for (String line : lines) {//para extraer las líneas del string, foreach pasa por lineas
+                    String[] parts = line.split(";");   //; separa string del bool parts [0] es
+                    // el nombre, parts[1] el bool(texto).
+                    itemList.add(new ShoppingItem(parts[0], parts[1].equals("true")));
+                    //añadir items a la lista, será cierto cuando p[1] sea true(checked)
+                }
             }
             fis.close();
 
@@ -186,9 +188,31 @@ public class ShoppingListActivity extends AppCompatActivity {
             case R.id.clear_checked:
                 clearChecked();                             //limpiar todos los seleccionados
                 return true;
+            case R.id.clear_all:
+                clearAll();
+                return true;
 
             default:return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void clearAll() {                               //borrar totos los item
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.confirm);
+        builder.setMessage(R.string.confirm_clear_all);
+
+        builder.setPositiveButton(R.string.clear_all, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                itemList.clear();                                   //borramos la lista
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.create().show();
+
+
     }
 
     private void clearChecked() {                           //limpiar todos los seleccionados
