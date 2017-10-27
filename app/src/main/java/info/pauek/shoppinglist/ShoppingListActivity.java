@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -178,4 +179,27 @@ public class ShoppingListActivity extends AppCompatActivity {
         inflater.inflate(R.menu.options, menu);     //infla el menu con este recurso
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){    //para que los click funcionen en el menu
+        switch (item.getItemId()){
+            case R.id.clear_checked:
+                clearChecked();                             //limpiar todos los seleccionados
+                return true;
+
+            default:return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void clearChecked() {                           //limpiar todos los seleccionados
+        int i = 0;
+        while (i < itemList.size()){                //while para que no bajen los elementos borrados
+            if(itemList.get(i).getCheck()){                 //Borrar si esta marcado
+                itemList.remove(i);
+            }
+            else {i++;}
+        }
+        adapter.notifyDataSetChanged();
+    }
+
 }
